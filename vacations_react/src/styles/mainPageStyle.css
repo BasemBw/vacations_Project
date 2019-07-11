@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css?family=Numans');
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    display: flex;
+    height: 100vh !important;
+    font-family: 'Muli', sans-serif;
+}
+
+
+
+.chartTitle {
+    color: #50d07d;
+
+}
+
+
+.saveModal {
+    position: relative !important;
+    top: 10px !important;
+    left: 0% !important;
+    width: 800px !important;
+}
+
+.background {
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+    position: fixed !important;
+}
+
+@media (max-width: 767px) {
+    .cardCon {
+        position: relative;
+        top: 150px;
+    }
+}
