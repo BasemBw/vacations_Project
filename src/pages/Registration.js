@@ -7,7 +7,7 @@ import Main from "./MainPage";
 import { Redirect } from "react-router-dom";
 
 import { User, host } from "../User";
-
+import { images } from "../Jsons/ModelInputs";
 import "../styles/login.css";
 import { Background } from "../styles/Background.js";
 
@@ -187,7 +187,7 @@ class Registration extends Component {
       return <Redirect to="/" />;
     }
     var background = new Background(
-      "url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1053&q=80') no-repeat center center fixed"
+      `url(${images.loginImage}) no-repeat center center fixed`
     );
     return (
       <div className="mybody p-0" style={background}>

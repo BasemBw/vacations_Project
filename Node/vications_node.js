@@ -11,7 +11,9 @@ var cookieParser = require("cookie-parser");
 var session = require("express-session");
 var bodyParser = require("body-parser");
 
-const port = 8080;
+const port = process.env.PORT || 8080;
+
+const { CARDS_CHANGED, LIKE_CARD } = require("../SocketReq");
 
 var corsOptions = {
   optionsSuccessStatus: 200,
@@ -40,15 +42,15 @@ io.on("connection", socket => {
   console.log("New client connected");
 
   // just like on the client side, we have a socket.on method that takes a callback function
-  socket.on("cardsChanged", () => {
+  socket.on(CARDS_CHANGED, () => {
     // once we get a 'change color' event from one of our clients, we will send it to the rest of the clients
     // we make use of the socket.emit method again with the argument given to use from the callback function above
-    io.sockets.emit("cardsChanged");
+    io.sockets.emit(CARDS_CHANGED);
   });
-  socket.on("like", () => {
+  socket.on(LIKE_CARD, () => {
     // once we get a 'change color' event from one of our clients, we will send it to the rest of the clients
     // we make use of the socket.emit method again with the argument given to use from the callback function above
-    io.sockets.emit("like");
+    io.sockets.emit(LIKE_CARD);
   });
 
   // disconnect is fired when a client leaves the server

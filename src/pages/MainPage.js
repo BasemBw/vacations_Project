@@ -8,6 +8,8 @@ import { Redirect } from "react-router-dom";
 import AddButton from "../components/AddButton";
 
 import { User, host } from "../User";
+import { socketReq } from "../Jsons/ModelInputs";
+import { images } from "../Jsons/ModelInputs";
 
 import "../styles/mainPageStyle.css";
 import { Background } from "../styles/Background.js";
@@ -21,7 +23,7 @@ class MainPage extends Component {
     redirect: false,
     modal: null,
     host: host,
-    h: document.body.scrollHeight - 50
+    h: document.body.scrollHeight
   };
   reportWindowSize = () => {
     var h = document.body.scrollHeight - 50;
@@ -35,8 +37,22 @@ class MainPage extends Component {
     withCredentials: true
   };
 
+  changeHeight = () => {
+    var body = document.body,
+      html = document.documentElement;
+
+    var h = Math.max(
+      body.scrollHeight,
+      body.offsetHeight,
+      html.clientHeight,
+      html.scrollHeight,
+      html.offsetHeight
+    );
+    this.setState({ h });
+  };
+
   componentDidMount = async () => {
-    window.onresize = this.reportWindowSize;
+    window.onresize = this.changeHeight();
     let log = await axios.get(`${this.state.host}/rememberd`, this.options);
     let user;
     if (
@@ -45,7 +61,7 @@ class MainPage extends Component {
       localStorage.getItem("user")
     ) {
       const socket = socketIOClient(this.state.host);
-      socket.on("cardsChanged", () => {
+      socket.on(socketReq.CARDS_CHANGED, () => {
         this.getCards();
       });
       if (log.data.remembrd === "1") {
@@ -81,7 +97,7 @@ class MainPage extends Component {
     let answer = await axios.get(`${this.state.host}/likedVic`, this.options);
     if (answer) {
       this.getCards();
-      this.sendEmit("like");
+      this.sendEmit(socketReq.LIKE_CARD);
     }
   };
 
@@ -111,7 +127,7 @@ class MainPage extends Component {
     });
     if (response) {
       this.getCards();
-      this.sendEmit("cardsChanged");
+      this.sendEmit(socketReq.CARDS_CHANGED);
     }
   };
 
@@ -147,7 +163,7 @@ class MainPage extends Component {
       });
       if (response.data) {
         this.getCards();
-        this.sendEmit("cardsChanged");
+        this.sendEmit(socketReq.CARDS_CHANGED);
       }
     }
   };
@@ -184,6 +200,7 @@ class MainPage extends Component {
     vicationCards.sort(this.compare); //sort cards by liked cards
     if (admin) vicationCards.push(<AddButton addCard={this.addCard} />); //add button
     this.setState({ vications: vicationCards });
+    this.changeHeight();
   };
 
   compare = (a, b) => {
@@ -228,8 +245,9 @@ class MainPage extends Component {
     }
 
     var background = new Background(
-      'url("/cloud.jpg") repeat center center fixed'
+      `url(${images.mainImage}) repeat center center fixed`
     );
+    background.height = this.state.h;
     return (
       <div
         className="container-fluid m-0 p-0"
